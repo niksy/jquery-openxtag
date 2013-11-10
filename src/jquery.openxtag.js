@@ -252,7 +252,7 @@
             var height = thesettings['height'];
 
             var allowtransparent = '';
-            if (typeof thesettings['allowtransparent'] != 'allowtransparent' && 
+            if (typeof thesettings['allowtransparent'] != 'allowtransparent' &&
                 thesettings['allowtransparent']) {
                 allowtransparent = ' allowtransparency="true" ';
             }
@@ -266,10 +266,10 @@
             var clickURL = delivery + '/' + thesettings['clickScript'];
             var adViewURL = delivery + '/' + thesettings['adViewScript'];
 
-            $this.append("<iframe id='" + uniqid + "' name='" + uniqid + "' src='" + scriptURL + "?" + $.param(data) + 
-            "' frameborder='0' scrolling='no' width='" + width + "' height='" + height + 
-            "'" + allowtransparent + "><a href='" + clickURL + "?n=" + uniqid + "&amp;cb=" + data['cb'] + "' target='" + 
-            target + "'><img src='" + adViewURL + "?zoneid=" + zoneID + "&amp;cb=" + 
+            $this.append("<iframe id='" + uniqid + "' name='" + uniqid + "' src='" + scriptURL + "?" + $.param(data) +
+            "' frameborder='0' scrolling='no' width='" + width + "' height='" + height +
+            "'" + allowtransparent + "><a href='" + clickURL + "?n=" + uniqid + "&amp;cb=" + data['cb'] + "' target='" +
+            target + "'><img src='" + adViewURL + "?zoneid=" + zoneID + "&amp;cb=" +
             data['cb'] + "&amp;n=" + uniqid + "' border='0' alt='' /></a></iframe>");
 
         });
@@ -336,8 +336,8 @@
     /// }}} spcTag
 
     function loadFlashObjectOnce(thesettings, callback) {
-        if (typeof window['org'] != 'undefined' && 
-            typeof window['org']['openx'] != 'undefined' && 
+        if (typeof window['org'] != 'undefined' &&
+            typeof window['org']['openx'] != 'undefined' &&
             typeof window['org']['openx']['SWFObject'] != 'undefined') {
             callback();
         }
@@ -467,7 +467,7 @@
      *
      * @name $.openxtag
      *
-     * @example 
+     * @example
      * $.openxtag('init', {
      *     delivery: 'http://example.com/openx/delivery',
      *     deliverySSL: 'https://example.com/openx/delivery'
@@ -494,4 +494,3 @@
     // }}} $.openxtag
 
 })(jQuery);
-
