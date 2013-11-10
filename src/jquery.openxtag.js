@@ -84,7 +84,7 @@
             }
             else {
                 $this.append(markup);
-                if (typeof success == 'function') {
+                if (typeof success == 'function' && markup != '') {
                     setTimeout(function () { success.call($this); }, 0);
                 }
             }
