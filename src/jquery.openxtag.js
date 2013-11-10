@@ -21,6 +21,41 @@
 
     var _loopIterations = 10;
 
+    // https://gist.github.com/padolsey/527683
+    // ----------------------------------------------------------
+    // A short snippet for detecting versions of IE in JavaScript
+    // without resorting to user-agent sniffing
+    // ----------------------------------------------------------
+    // If you're not in IE (or IE version is less than 5) then:
+    //     ieVersion === undefined
+    // If you're in IE (>=5) then you can determine which version:
+    //     ieVersion === 7; // IE7
+    // Thus, to detect IE:
+    //     if (ieVersion) {}
+    // And to detect the version:
+    //     ieVersion === 6 // IE6
+    //     ieVersion > 7 // IE8, IE9 ...
+    //     ieVersion < 9 // Anything less than IE9
+    // ----------------------------------------------------------
+
+    // UPDATE: Now using Live NodeList idea from @jdalton
+
+    var ieVersion = (function(){
+
+        var undef,
+            v = 3,
+            div = document.createElement('div'),
+            all = div.getElementsByTagName('i');
+
+        while (
+            div.innerHTML = '<!--[if gt IE ' + (++v) + ']><i></i><![endif]-->',
+            all[0]
+        );
+
+        return v > 4 ? v : undef;
+
+    }());
+
     var defaults = {
         'jsPrefix': 'OA_',
         'swfObjectJS': 'fl.js',
@@ -69,6 +104,17 @@
                 } else {
 
                     postscribe($this, markup, $.proxy( success, $this, $this ));
+
+                    if( markup.match(/link.+href/) ){
+
+                        var $markup = $(markup);
+
+                        if ( ieVersion <= 8 ) {
+                            $markup.filter('link').each(function(i,el){
+                                $('<link rel="stylesheet" type="text/css" href="' + $(el).attr('href') + '" />').appendTo('head');
+                            });
+                        }
+                    }
 
                 }
 
