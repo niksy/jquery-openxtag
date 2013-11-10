@@ -1,0 +1,36 @@
+{
+  "name": "jquery-openxtag",
+  "version": "1.1.0",
+  "description": "Insert OpenX ad tags using jQuery.",
+  "main": "src/jquery.openxtag.js",
+  "directories": {
+    "example": "examples"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/niksy/jquery-openxtag.git"
+  },
+  "keywords": [
+    "ads",
+    "asynchronous",
+    "invocation",
+    "openx",
+    "jquery"
+  ],
+  "author": "Nikolay Morev <kolia@denivip.ru>",
+  "contributors": [
+    "Ivan Nikolić <niksy5@gmail.com>"
+  ],
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/niksy/jquery-openxtag/issues"
+  },
+  "dependencies": {
+    "grunt": "~0.4.1",
+    "grunt-contrib-concat": "~0.3.0",
+    "grunt-contrib-uglify": "~0.2.7",
+    "grunt-contrib-copy": "~0.4.1",
+    "grunt-contrib-jshint": "~0.7.1",
+    "grunt-bump": "0.0.11"
+  }
+}

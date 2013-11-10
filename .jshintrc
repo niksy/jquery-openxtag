@@ -1,0 +1,7 @@
+{
+	"sub": true,
+	"eqnull": true,
+	"evil": true,
+	"-W122": true,
+	"-W041": true
+}
