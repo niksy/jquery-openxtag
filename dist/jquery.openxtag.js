@@ -1,18 +1,16 @@
-/*
- * jQuery OpenX ad tags plugin
- *
- * Tested with OpenX Community Edition 2.8.8-rc6
- *
- * @version 1.1
- * @date Wed Aug 3 00:21:14 2011 +0400
- * @requires jQuery
- * @url http://plugins.jquery.com/project/openxtag
- *
- * @author Nikolay Morev <kolia@denivip.ru>
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
- *
- */
+/* 
 
+jQuery OpenX ad tags plugin
+
+Tested with OpenX Community Edition 2.8.8-rc6
+
+@version 1.2.0
+@date 10.11.2013
+@author Nikolay Morev <kolia@denivip.ru>
+@contributors Ivan Nikolić <niksy5@gmail.com>
+@license MIT
+
+ */
 (function ($) {
 
     // NOTE Use strings instead of symbolic names if that name will be used
@@ -20,6 +18,41 @@
     // advanced optimization
 
     var _loopIterations = 10;
+
+    // https://gist.github.com/padolsey/527683
+    // ----------------------------------------------------------
+    // A short snippet for detecting versions of IE in JavaScript
+    // without resorting to user-agent sniffing
+    // ----------------------------------------------------------
+    // If you're not in IE (or IE version is less than 5) then:
+    //     ieVersion === undefined
+    // If you're in IE (>=5) then you can determine which version:
+    //     ieVersion === 7; // IE7
+    // Thus, to detect IE:
+    //     if (ieVersion) {}
+    // And to detect the version:
+    //     ieVersion === 6 // IE6
+    //     ieVersion > 7 // IE8, IE9 ...
+    //     ieVersion < 9 // Anything less than IE9
+    // ----------------------------------------------------------
+
+    // UPDATE: Now using Live NodeList idea from @jdalton
+
+    var ieVersion = (function(){
+
+        var undef,
+            v = 3,
+            div = document.createElement('div'),
+            all = div.getElementsByTagName('i');
+
+        while (
+            div.innerHTML = '<!--[if gt IE ' + (++v) + ']><i></i><![endif]-->',
+            all[0]
+        );
+
+        return v > 4 ? v : undef;
+
+    }());
 
     var defaults = {
         'jsPrefix': 'OA_',
@@ -50,30 +83,56 @@
         defaults = $.extend(defaults, options);
     };
 
-    // {{{ function _documentWriteSafeAppend(markup, $this) { ... }
-    function _documentWriteSafeAppend(markup, $this) {
+    // {{{ function _documentWriteSafeAppend(markup, $this, success) { ... }
+    function _documentWriteSafeAppend(markup, $this, success) {
         var cnt = 0; // prevent infinite loops
         (function (markup) {
             if (markup.match(/document\.write|<script/)) {
-                var oldDocumentWrite = document.write;
-                var buffer = '';
-                document.write = function (markup) {
-                    buffer += markup;
-                };
-                $this.append(markup);
-                document.write = oldDocumentWrite;
+
+                var oldDocumentWrite;
+                var buffer;
+
+                if( $this.data('no-postscribe') ){
+
+                    oldDocumentWrite = document.write;
+                    buffer = '';
+                    document.write = function (markup) {
+                        buffer += markup;
+                    };
+
+                    document.write = oldDocumentWrite;
+
+                } else {
+
+                    postscribe($this, markup, $.proxy( success, $this, $this ));
+
+                    if( markup.match(/link.+href/) ){
+
+                        var $markup = $(markup);
+
+                        if ( ieVersion <= 8 ) {
+                            $markup.filter('link').each(function(i,el){
+                                $('<link rel="stylesheet" type="text/css" href="' + $(el).attr('href') + '" />').appendTo('head');
+                            });
+                        }
+                    }
+
+                }
 
                 cnt++;
                 if (cnt > _loopIterations) {
                     $.error('openxtag: document.write loop stopped after ' + _loopIterations + ' iterations');
                 }
 
-                arguments.callee(buffer);
+                if( $this.data('no-postscribe') ){
+                    arguments.callee(buffer);
+                }
+
             }
             else {
                 $this.append(markup);
-                if (typeof success == 'function') {
-                    setTimeout(success, 0);
+                if (typeof success == 'function' && markup != '') {
+                    setTimeout(function () { success.call($this, $this); }, 0);
                 }
             }
         })(markup);
@@ -153,7 +212,7 @@
         // fixing http://bugs.jquery.com/ticket/8653
 
         for (var key in data) {
-            if (typeof data[key] == 'undefined') {
+            if (typeof data[key] == 'undefined' || data[key] == '') {
                 delete data[key];
             }
         }
@@ -206,7 +265,7 @@
                 dataType: 'html',
                 async: thesettings['forceAsync'], // should be disabled for block(campaign)
                 success: function (data) {
-                    _documentWriteSafeAppend('<script type="text/javascript">' + data + '</script>', $this);
+                    _documentWriteSafeAppend('<script type="text/javascript">' + data + '</script>', $this, success);
                 }
             });
         });
@@ -252,7 +311,7 @@
             var height = thesettings['height'];
 
             var allowtransparent = '';
-            if (typeof thesettings['allowtransparent'] != 'allowtransparent' && 
+            if (typeof thesettings['allowtransparent'] != 'allowtransparent' &&
                 thesettings['allowtransparent']) {
                 allowtransparent = ' allowtransparency="true" ';
             }
@@ -266,10 +325,10 @@
             var clickURL = delivery + '/' + thesettings['clickScript'];
             var adViewURL = delivery + '/' + thesettings['adViewScript'];
 
-            $this.append("<iframe id='" + uniqid + "' name='" + uniqid + "' src='" + scriptURL + "?" + $.param(data) + 
-            "' frameborder='0' scrolling='no' width='" + width + "' height='" + height + 
-            "'" + allowtransparent + "><a href='" + clickURL + "?n=" + uniqid + "&amp;cb=" + data['cb'] + "' target='" + 
-            target + "'><img src='" + adViewURL + "?zoneid=" + zoneID + "&amp;cb=" + 
+            $this.append("<iframe id='" + uniqid + "' name='" + uniqid + "' src='" + scriptURL + "?" + $.param(data) +
+            "' frameborder='0' scrolling='no' width='" + width + "' height='" + height +
+            "'" + allowtransparent + "><a href='" + clickURL + "?n=" + uniqid + "&amp;cb=" + data['cb'] + "' target='" +
+            target + "'><img src='" + adViewURL + "?zoneid=" + zoneID + "&amp;cb=" +
             data['cb'] + "&amp;n=" + uniqid + "' border='0' alt='' /></a></iframe>");
 
         });
@@ -290,13 +349,17 @@
             if (typeof $.metadata != 'undefined') {
                 thesettings = $.extend(thesettings, $this.metadata());
             }
+            thesettings = $.extend(thesettings, $this.data());
+
+            thesettings['zoneID'] = thesettings['zoneId'];
+            delete thesettings['zoneId'];
 
             var zoneID = thesettings['zoneID'];
             if (zoneID == null) {
                 $.error('please set "zoneID" option for openxtag jsZone');
             }
 
-            var zoneName = 'z' + i;
+            var zoneName = thesettings['zoneName'];
             zones[zoneName] = zoneID;
             $this.data('openxtag', { 'zn': zoneName });
 
@@ -325,7 +388,7 @@
                     var output = eval('(function () {' + data + ';return ' + thesettings['jsPrefix'] + 'output;})()');
                     that.each(function () {
                         var $this = $(this);
-                        _documentWriteSafeAppend(output[$this.data('openxtag')['zn']], $this);
+                        _documentWriteSafeAppend(output[$this.data('openxtag')['zn']], $this, success);
                     });
                 });
             }
@@ -336,8 +399,8 @@
     /// }}} spcTag
 
     function loadFlashObjectOnce(thesettings, callback) {
-        if (typeof window['org'] != 'undefined' && 
-            typeof window['org']['openx'] != 'undefined' && 
+        if (typeof window['org'] != 'undefined' &&
+            typeof window['org']['openx'] != 'undefined' &&
             typeof window['org']['openx']['SWFObject'] != 'undefined') {
             callback();
         }
@@ -467,7 +530,7 @@
      *
      * @name $.openxtag
      *
-     * @example 
+     * @example
      * $.openxtag('init', {
      *     delivery: 'http://example.com/openx/delivery',
      *     deliverySSL: 'https://example.com/openx/delivery'
@@ -494,4 +557,3 @@
     // }}} $.openxtag
 
 })(jQuery);
-
