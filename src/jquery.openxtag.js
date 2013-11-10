@@ -348,13 +348,17 @@
             if (typeof $.metadata != 'undefined') {
                 thesettings = $.extend(thesettings, $this.metadata());
             }
+            thesettings = $.extend(thesettings, $this.data());
+
+            thesettings['zoneID'] = thesettings['zoneId'];
+            delete thesettings['zoneId'];
 
             var zoneID = thesettings['zoneID'];
             if (zoneID == null) {
                 $.error('please set "zoneID" option for openxtag jsZone');
             }
 
-            var zoneName = 'z' + i;
+            var zoneName = thesettings['zoneName'];
             zones[zoneName] = zoneID;
             $this.data('openxtag', { 'zn': zoneName });
 
