@@ -55,20 +55,32 @@
         var cnt = 0; // prevent infinite loops
         (function (markup) {
             if (markup.match(/document\.write|<script/)) {
-                var oldDocumentWrite = document.write;
-                var buffer = '';
-                document.write = function (markup) {
-                    buffer += markup;
-                };
-                $this.append(markup);
-                document.write = oldDocumentWrite;
+
+                if( $this.data('no-postscribe') ){
+
+                    var oldDocumentWrite = document.write;
+                    var buffer = '';
+                    document.write = function (markup) {
+                        buffer += markup;
+                    };
+
+                    document.write = oldDocumentWrite;
+
+                } else {
+
+                    postscribe($this, markup, $.proxy( success, $this ));
+
+                }
 
                 cnt++;
                 if (cnt > _loopIterations) {
                     $.error('openxtag: document.write loop stopped after ' + _loopIterations + ' iterations');
                 }
 
-                arguments.callee(buffer);
+                if( $this.data('no-postscribe') ){
+                    arguments.callee(buffer);
+                }
+
             }
             else {
                 $this.append(markup);
