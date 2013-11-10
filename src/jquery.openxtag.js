@@ -68,7 +68,7 @@
 
                 } else {
 
-                    postscribe($this, markup, $.proxy( success, $this ));
+                    postscribe($this, markup, $.proxy( success, $this, $this ));
 
                 }
 
@@ -85,7 +85,7 @@
             else {
                 $this.append(markup);
                 if (typeof success == 'function' && markup != '') {
-                    setTimeout(function () { success.call($this); }, 0);
+                    setTimeout(function () { success.call($this, $this); }, 0);
                 }
             }
         })(markup);
