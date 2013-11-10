@@ -1,0 +1,28 @@
+{
+  "name": "jquery-openxtag",
+  "version": "1.1.0",
+  "homepage": "https://github.com/niksy/jquery-openxtag",
+  "description": "Insert OpenX ad tags using jQuery.",
+  "main": "dist/jquery.openxtag.js",
+  "keywords": [
+    "ads",
+    "asynchronous",
+    "invocation",
+    "openx",
+    "jquery"
+  ],
+  "authors": [
+    "Nikolay Morev <kolia@denivip.ru>"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "postscribe": "git@github.com:niksy/postscribe.git#~1.1.3"
+  }
+}

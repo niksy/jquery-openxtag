@@ -1,18 +1,3 @@
-/*
- * jQuery OpenX ad tags plugin
- *
- * Tested with OpenX Community Edition 2.8.8-rc6
- *
- * @version @VERSION
- * @date @DATE
- * @requires jQuery
- * @url http://plugins.jquery.com/project/openxtag
- *
- * @author Nikolay Morev <kolia@denivip.ru>
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
- *
- */
-
 (function ($) {
 
     // NOTE Use strings instead of symbolic names if that name will be used
@@ -91,10 +76,13 @@
         (function (markup) {
             if (markup.match(/document\.write|<script/)) {
 
+                var oldDocumentWrite;
+                var buffer;
+
                 if( $this.data('no-postscribe') ){
 
-                    var oldDocumentWrite = document.write;
-                    var buffer = '';
+                    oldDocumentWrite = document.write;
+                    buffer = '';
                     document.write = function (markup) {
                         buffer += markup;
                     };
