@@ -16,6 +16,22 @@ additional improvements over standard OpenX tags:
 The plugin was successfully tested with OpenX Community Edition version
 2.8.8-rc6 (the most recent at the moment).
 
+---
+
+About this fork
+--------------
+
+This fork and it’s version 1.2.0 brings some changes in terms of parsing
+`document.write` calls and returning data in success callbacks.
+
+Specifically, by default, it uses excellent [Postscribe parser](https://github.com/krux/postscribe)
+to circumvent various errors in markup found in ad campaigns. If there is no
+Postscribe parser available, it will fall back to standard one if you give ad
+element `data` attribute `no-postscribe`.
+
+Since this fork’s intention was to use it only on SPC calls, some modifications
+were made to that part of codebase which can be seen in section about SPC calls.
+
 Usage examples
 --------------
 
@@ -72,6 +88,20 @@ $('.banner').openxtag('spc', function () {
 });
 ```
 
+**As of 1.2.0 on this fork**, you can load all ads using invocation parameters via
+`data` attributes set for each placeholder element in their HTML code.
+
+```javascript
+$('.banner').openxtag('zone', function () {
+    console.log('loaded ad');
+});
+```
+
+```html
+<div data-zone-name="zone1" data-zone-id="1"></div>
+<div data-zone-name="zone2" data-zone-id="2"></div>
+```
+
 Load ads using iFrame tag. Width and height parameters are required.
 
 ```javascript
@@ -111,7 +141,7 @@ workarounds are:
  * Use iframe or spc type tags. SPC (Single Page Call) is recommended.
  * Setup server-side XHR proxy on same domain that your ad tag requests
    originate from.
- * Add Access-Control-Allow-Origin response header in your OpenX web server
+ * Add `Access-Control-Allow-Origin` response header in your OpenX web server
    configuration (not all browsers support this header).
 
 The plugin may not display custom HTML ads properly if their code contains
