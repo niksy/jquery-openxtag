@@ -211,7 +211,7 @@
         // fixing http://bugs.jquery.com/ticket/8653
 
         for (var key in data) {
-            if (typeof data[key] == 'undefined') {
+            if (typeof data[key] == 'undefined' || data[key] == '') {
                 delete data[key];
             }
         }
