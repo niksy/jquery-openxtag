@@ -1,3 +1,16 @@
+/* 
+
+jQuery OpenX ad tags plugin
+
+Tested with OpenX Community Edition 2.8.8-rc6
+
+@version 1.2.0
+@date 10.11.2013
+@author Nikolay Morev <kolia@denivip.ru>
+@contributors Ivan Nikolić <niksy5@gmail.com>
+@license MIT
+
+ */
 (function ($) {
 
     // NOTE Use strings instead of symbolic names if that name will be used

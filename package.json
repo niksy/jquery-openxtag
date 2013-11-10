@@ -1,6 +1,6 @@
 {
   "name": "jquery-openxtag",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Insert OpenX ad tags using jQuery.",
   "main": "src/jquery.openxtag.js",
   "directories": {
