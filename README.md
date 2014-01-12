@@ -92,7 +92,7 @@ $('.banner').openxtag('spc', function () {
 `data` attributes set for each placeholder element in their HTML code.
 
 ```javascript
-$('.banner').openxtag('zone', function () {
+$('.banner').openxtag('spc', function () {
     console.log('loaded ad');
 });
 ```
