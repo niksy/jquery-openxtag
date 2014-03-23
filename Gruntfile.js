@@ -99,6 +99,8 @@ module.exports = function (grunt) {
 	grunt.loadNpmTasks( 'grunt-bump' );
 
 	grunt.registerTask( 'default', ['jshint:dist', 'concat:dist', 'copy:dist', 'uglify:dist'] );
-	grunt.registerTask( 'release', ['bump-only:minor', 'default', 'bump-commit'] );
+	grunt.registerTask( 'releaseMajor', ['bump-only:major', 'default', 'bump-commit'] );
+	grunt.registerTask( 'releaseMinor', ['bump-only:minor', 'default', 'bump-commit'] );
+	grunt.registerTask( 'releasePatch', ['bump-only:patch', 'default', 'bump-commit'] );
 
 };
